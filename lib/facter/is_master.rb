@@ -18,6 +18,7 @@ def get_options_from_hash_config(config)
   result << "--sslPEMKeyFile #{config['net.ssl.PEMKeyFile']}" unless config['net.ssl.PEMKeyFile'].nil?
   result << "--sslCAFile #{config['net.ssl.CAFile']}" unless config['net.ssl.CAFile'].nil?
   result << '--ipv6' unless config['net.ipv6'].nil?
+  result << '--sslAllowInvalidHostnames true' if config['net.ssl.allowInvalidHostnames']
 
   result.join(' ')
 end
