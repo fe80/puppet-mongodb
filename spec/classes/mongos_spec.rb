@@ -23,6 +23,7 @@ describe 'mongodb::mongos' do
 
         # install
         it { is_expected.to contain_class('mongodb::mongos::install') }
+
         if facts[:os]['release']['major'] =~ %r{(10)}
           it { is_expected.to contain_package('mongodb_mongos').with_ensure('4.4.8').with_name(package_name).with_tag('mongodb_package') }
         else
@@ -32,7 +33,7 @@ describe 'mongodb::mongos' do
         # config
         it { is_expected.to contain_class('mongodb::mongos::config') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'RedHat', 'Suse'
           expected_content = <<-CONFIG
 configdb = 127.0.0.1:27019
@@ -54,13 +55,13 @@ configdb = 127.0.0.1:27019
         # service
         it { is_expected.to contain_class('mongodb::mongos::service') }
 
-        if facts[:osfamily] == 'RedHat' || facts[:osfamily] == 'Suse'
+        if facts[:os]['family'] == 'RedHat' || facts[:os]['family'] == 'Suse'
           it { is_expected.to contain_file('/etc/sysconfig/mongos') }
         else
           it { is_expected.not_to contain_file('/etc/sysconfig/mongos') }
         end
 
-        if facts[:osfamily] == 'Debian'
+        if facts[:os]['family'] == 'Debian'
           it { is_expected.to contain_file('/etc/init.d/mongos') }
         else
           it { is_expected.not_to contain_file('/etc/init.d/mongos') }
@@ -119,7 +120,8 @@ configdb = 127.0.0.1:27019
 
         # install
         it { is_expected.to contain_class('mongodb::mongos::install') }
-        if facts[:osfamily] == 'Suse'
+
+        if facts[:os]['family'] == 'Suse'
           it { is_expected.to contain_package('mongodb_mongos').with_ensure('absent') }
         else
           it { is_expected.to contain_package('mongodb_mongos').with_ensure('purged') }
@@ -128,20 +130,20 @@ configdb = 127.0.0.1:27019
         # config
         it { is_expected.to contain_class('mongodb::mongos::config') }
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'RedHat', 'Suse'
           it { is_expected.to contain_file('/etc/mongos.conf').with_ensure('absent') }
         when 'Debian'
           it { is_expected.to contain_file('/etc/mongodb-shard.conf').with_ensure('absent') }
         end
 
-        if facts[:osfamily] == 'RedHat' || facts[:osfamily] == 'Suse'
+        if facts[:os]['family'] == 'RedHat' || facts[:os]['family'] == 'Suse'
           it { is_expected.to contain_file('/etc/sysconfig/mongos').with_ensure('absent') }
         else
           it { is_expected.not_to contain_file('/etc/sysconfig/mongos') }
         end
 
-        if facts[:osfamily] == 'Debian'
+        if facts[:os]['family'] == 'Debian'
           it { is_expected.to contain_file('/etc/init.d/mongos').with_ensure('absent') }
         else
           it { is_expected.not_to contain_file('/etc/init.d/mongos') }

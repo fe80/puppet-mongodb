@@ -1,6 +1,12 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::mongos::params inherits mongodb::globals {
-  $manage_package = pick($mongodb::globals::manage_package, $mongodb::globals::manage_package_repo, false)
+  $manage_package = pick(
+    $mongodb::globals::manage_package,
+    (
+      $facts['os']['family'] == 'Debian' and
+      $facts['os']['release']['major'] == '10'
+    )
+  )
 
   $version = $mongodb::globals::version
 
